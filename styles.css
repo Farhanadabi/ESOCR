@@ -235,3 +235,24 @@ form {
     text-align: center;
 }
 
+.form-status {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.form-status .error {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: #ff6666;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ff6666;
+}
+
+.form-status .success {
+    background-color: rgba(0, 255, 0, 0.1);
+    color: #66ff66;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #66ff66;
+}
