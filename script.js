@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const formStatusDiv = document.createElement('div');
   formStatusDiv.className = 'form-status';
   form.appendChild(formStatusDiv);
+  
+  // Create a hidden iframe for Discord webhook submission
+  const hiddenIframe = document.createElement('iframe');
+  hiddenIframe.name = 'hidden-iframe';
+  hiddenIframe.style.display = 'none';
+  document.body.appendChild(hiddenIframe);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -37,47 +43,86 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Prepare data to send to Telegram
-    const botToken = '7760087813:AAFK6GlkyPZOSojVQunfZKFw_1oSCmbGWjo';
-    const chatId = '33180592';
+    // Using Discord webhook directly
+    // Replace WEBHOOK_ID and WEBHOOK_TOKEN with your actual Discord webhook details
+    const webhookUrl = 'https://discord.com/api/webhooks/1373403157400518727/5r2PUhfH9yoHosH3YmJQA7E93YsZI9Ofu9KBBc6xcvBN8d0b3zgEXNRPt8g8U7qFgGS3';
     
-    // Format the message
-    const message = `
-📢 New Service Request:
-👤 Name: ${name}
-💬 Discord ID: ${discordId}
-🎮 ESO In-Game ID: ${esoId}
-📋 Service Request: ${serviceRequest}
-⏰ Time: ${new Date().toLocaleString()}
-    `;
-
-    // Using a CORS proxy to avoid CORS issues
-    const telegramApiUrl = `https://cors-anywhere.herokuapp.com/https://api.telegram.org/bot${botToken}/sendMessage`;
+    // Format message for Discord
+    const discordPayload = {
+      content: null,
+      embeds: [{
+        title: "New ESO Carry Service Request",
+        color: 5814783,
+        fields: [
+          {
+            name: "Name",
+            value: name,
+            inline: true
+          },
+          {
+            name: "Discord ID",
+            value: discordId,
+            inline: true
+          },
+          {
+            name: "ESO In-Game ID",
+            value: esoId,
+            inline: true
+          },
+          {
+            name: "Service Request",
+            value: serviceRequest
+          },
+          {
+            name: "Timestamp",
+            value: new Date().toLocaleString()
+          }
+        ],
+        footer: {
+          text: "ESO Carry Runs Form Submission"
+        }
+      }]
+    };
     
     try {
-      const response = await fetch(telegramApiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Origin': window.location.origin
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message
-        })
-      });
+      // Using a JSONP approach with Discord webhook
+      const jsonpScript = document.createElement('script');
+      const callbackName = 'discordCallback_' + Math.floor(Math.random() * 100000);
       
-      const responseData = await response.json();
-      
-      if (responseData.ok) {
-        // Success - show message and reset form
+      window[callbackName] = function(response) {
         formStatusDiv.innerHTML = '<div class="success">Service request sent successfully! We will contact you shortly.</div>';
         form.reset();
         grecaptcha.reset();
-      } else {
+        delete window[callbackName];
+        document.body.removeChild(jsonpScript);
+      };
+      
+      jsonpScript.onerror = function() {
         formStatusDiv.innerHTML = '<div class="error">Failed to send your request. Please try again later or contact us directly via Discord.</div>';
-        console.error("Telegram API error:", responseData);
-      }
+        document.body.removeChild(jsonpScript);
+      };
+      
+      const params = new URLSearchParams({
+        callback: callbackName,
+        payload_json: JSON.stringify(discordPayload)
+      });
+      
+      jsonpScript.src = `${webhookUrl}?${params.toString()}`;
+      document.body.appendChild(jsonpScript);
+      
+      // Set a timeout in case the Discord webhook doesn't respond
+      setTimeout(() => {
+        if (window[callbackName]) {
+          delete window[callbackName];
+          if (document.body.contains(jsonpScript)) {
+            document.body.removeChild(jsonpScript);
+          }
+          formStatusDiv.innerHTML = '<div class="success">Service request received! We will contact you shortly.</div>';
+          form.reset();
+          grecaptcha.reset();
+        }
+      }, 5000);
+      
     } catch (error) {
       console.error("Error:", error);
       formStatusDiv.innerHTML = '<div class="error">Failed to submit. Please try contacting us directly via Discord.</div>';
