@@ -7,10 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   formStatusDiv.className = 'form-status';
   form.appendChild(formStatusDiv);
 
-  // Update the form action to use Formspree
-  form.action = "https://formspree.io/f/your-formspree-id"; // Replace with your Formspree ID
-  form.method = "POST";
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -41,32 +37,50 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Prepare data to send to Formspree
-    const formData = new FormData(form);
-    formData.append('g-recaptcha-response', captchaResponse);
+    // Prepare data to send to Telegram
+    const botToken = '7760087813:AAFK6GlkyPZOSojVQunfZKFw_1oSCmbGWjo';
+    const chatId = '33180592';
+    
+    // Format the message
+    const message = `
+📢 New Service Request:
+👤 Name: ${name}
+💬 Discord ID: ${discordId}
+🎮 ESO In-Game ID: ${esoId}
+📋 Service Request: ${serviceRequest}
+⏰ Time: ${new Date().toLocaleString()}
+    `;
+
+    // Using a CORS proxy to avoid CORS issues
+    const telegramApiUrl = `https://cors-anywhere.herokuapp.com/https://api.telegram.org/bot${botToken}/sendMessage`;
     
     try {
-      const response = await fetch(form.action, {
+      const response = await fetch(telegramApiUrl, {
         method: 'POST',
-        body: formData,
         headers: {
-          'Accept': 'application/json'
-        }
+          'Content-Type': 'application/json',
+          'Origin': window.location.origin
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message
+        })
       });
       
       const responseData = await response.json();
       
-      if (response.ok) {
+      if (responseData.ok) {
         // Success - show message and reset form
         formStatusDiv.innerHTML = '<div class="success">Service request sent successfully! We will contact you shortly.</div>';
         form.reset();
         grecaptcha.reset();
       } else {
-        formStatusDiv.innerHTML = `<div class="error">${responseData.error || 'Failed to submit. Please try again.'}</div>`;
+        formStatusDiv.innerHTML = '<div class="error">Failed to send your request. Please try again later or contact us directly via Discord.</div>';
+        console.error("Telegram API error:", responseData);
       }
     } catch (error) {
       console.error("Error:", error);
-      formStatusDiv.innerHTML = '<div class="error">Failed to submit. Please try again.</div>';
+      formStatusDiv.innerHTML = '<div class="error">Failed to submit. Please try contacting us directly via Discord.</div>';
     } finally {
       submitButton.disabled = false;
       submitButton.innerHTML = 'Submit';
