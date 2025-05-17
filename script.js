@@ -22,7 +22,7 @@ form.addEventListener('submit', async (e) => {
         discordId,
         esoId,
         serviceRequest,
-        
+        captchaResponse,
     };
 
     try {
