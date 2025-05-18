@@ -6,15 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
   formStatusDiv.className = 'form-status';
   form.appendChild(formStatusDiv);
 
+  // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Disable button and show loading state
     submitButton.disabled = true;
     submitButton.innerHTML = 'Sending... <span class="loading-spinner"></span>';
     formStatusDiv.innerHTML = '';
 
-    // Validate reCAPTCHA
     const captchaResponse = grecaptcha.getResponse();
     if (!captchaResponse) {
       formStatusDiv.innerHTML = '<div class="error">Please complete the CAPTCHA verification</div>';
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Get and sanitize inputs
     const name = sanitizeInput(form.querySelector("#name").value.trim());
     const discordId = sanitizeInput(form.querySelector("#discord-id").value.trim());
     const esoId = sanitizeInput(form.querySelector("#eso-id").value.trim());
@@ -52,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const response = await fetch('https://eso-form-handler.farhan-r-20139021.workers.dev/', {
+      const response = await fetch('https://eso-form-handler.farhan-r-20139021.workers.dev/ ', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -78,16 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return input.replace(/[&<>"'`=\/]/g, '');
   }
 
-  // Optional: Dark mode toggle
+  // Dark mode toggle
   const toggleBtn = document.querySelector('.dark-mode-toggle');
   if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    });
-
-    if (localStorage.getItem('darkMode') === 'true') {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
       document.body.classList.add('dark-mode');
     }
+
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const darkModeEnabled = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', darkModeEnabled);
+    });
   }
 });
