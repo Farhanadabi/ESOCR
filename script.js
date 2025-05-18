@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const response = await fetch('https://eso-form-handler.farhan-r-20139021.workers.dev/ ', {
+      const response = await fetch('https://eso-form-handler.farhan-r-20139021.workers.dev/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
