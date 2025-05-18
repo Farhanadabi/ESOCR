@@ -8,22 +8,24 @@
   <meta name="description" content="Fast, reliable, and affordable ESO carry runs. Check out our services and prices."/>
   <meta name="keywords" content="ESO, carry runs, services, prices, dungeons, trials, arenas"/>
 
-  <!-- reCAPTCHA API -->
+  <!-- reCAPTCHA -->
   <script src="https://www.google.com/recaptcha/api.js " async defer></script>
 </head>
-<body>
+<body class="dark-mode">
 
   <header class="header">
     <h1>ESO Carry Runs</h1>
     <h2>PC-EU</h2>
     <p>Fast, Reliable, Affordable!</p>
-    <a href="#services" class="btn" aria-label="View Services and Prices">View Services & Prices</a>
+    <a href="#services" class="btn">View Services & Prices</a>
   </header>
 
   <main>
+    <!-- Services Section -->
     <section id="services" class="services">
       <h2 class="section-title">Services & Prices</h2>
 
+      <!-- Level-Up Table -->
       <div class="table-container">
         <h3>Level-Up</h3>
         <table>
@@ -42,6 +44,7 @@
         </table>
       </div>
 
+      <!-- Dungeons (Non-DLC) -->
       <div class="table-container">
         <h3>Dungeons (Non-DLC)</h3>
         <table>
@@ -60,6 +63,7 @@
         </table>
       </div>
 
+      <!-- Dungeons (DLC) -->
       <div class="table-container">
         <h3>Dungeons (DLC)</h3>
         <table>
@@ -97,6 +101,7 @@
         </table>
       </div>
 
+      <!-- Arenas -->
       <div class="table-container">
         <h3>Arenas</h3>
         <table>
@@ -119,6 +124,7 @@
         </table>
       </div>
 
+      <!-- Trials -->
       <div class="table-container">
         <h3>Trials</h3>
         <table>
@@ -175,18 +181,19 @@
       </div>
     </section>
 
+    <!-- Contact Form -->
     <section id="contact" class="contact">
       <div class="contact-container">
         <h2>Contact</h2>
         <form id="contact-form">
           <label for="name">Name:</label>
-          <input type="text" id="name" name="name" required aria-required="true">
+          <input type="text" id="name" name="name" required aria-required="true" />
 
           <label for="discord-id">Discord ID:</label>
-          <input type="text" id="discord-id" name="discord-id" required aria-required="true">
+          <input type="text" id="discord-id" name="discord-id" required aria-required="true" />
 
           <label for="eso-id">ESO In-Game ID:</label>
-          <input type="text" id="eso-id" name="eso-id" required aria-required="true">
+          <input type="text" id="eso-id" name="eso-id" required aria-required="true" />
 
           <label for="service">Service Request:</label>
           <textarea id="service" name="service" rows="5" required aria-required="true"></textarea>
@@ -202,19 +209,9 @@
     <p>© 2024 ESO Carry Runs. All Rights Reserved.</p>
   </footer>
 
-  <!-- Dark Mode Toggle Button (Optional) -->
+  <!-- Dark Mode Toggle -->
   <button class="dark-mode-toggle" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>
+    ☀️
   </button>
 
   <script src="script.js"></script>
