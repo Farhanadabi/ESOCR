@@ -2,14 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#contact-form');
   const submitButton = form.querySelector('button[type="submit"]');
   const formStatusDiv = document.createElement('div');
-
   formStatusDiv.className = 'form-status';
   form.appendChild(formStatusDiv);
 
   // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     submitButton.disabled = true;
     submitButton.innerHTML = 'Sending... <span class="loading-spinner"></span>';
     formStatusDiv.innerHTML = '';
@@ -35,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const payload = {
+      recaptchaToken: captchaResponse, // Send reCAPTCHA token to worker
       embeds: [{
         title: "New ESO Carry Service Request",
         color: 5814783,
@@ -56,16 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify(payload)
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         formStatusDiv.innerHTML = '<div class="success">Service request sent successfully! We will contact you shortly.</div>';
         form.reset();
         grecaptcha.reset();
       } else {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        throw new Error(result.error || `Server responded with ${response.status}`);
       }
     } catch (error) {
       console.error("Error:", error);
-      formStatusDiv.innerHTML = '<div class="error">Failed to submit. Please try contacting us directly via Discord.</div>';
+      formStatusDiv.innerHTML = `<div class="error">Failed to submit: ${error.message}. Please try contacting us directly via Discord.</div>`;
     } finally {
       submitButton.disabled = false;
       submitButton.innerHTML = 'Submit';
@@ -76,19 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return input.replace(/[&<>"'`=\/]/g, '');
   }
 
-  // Dark mode toggle
+  // Dark mode toggle (using in-memory storage for artifacts)
   const toggleBtn = document.querySelector('.dark-mode-toggle');
   if (toggleBtn) {
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-    if (isDarkMode) {
-      document.body.classList.add('dark-mode');
-    }
-
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
-      const darkModeEnabled = document.body.classList.contains('dark-mode');
-      localStorage.setItem('darkMode', darkModeEnabled);
     });
   }
 });
-
